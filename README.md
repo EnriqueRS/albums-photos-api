@@ -5,6 +5,17 @@ La Arquitectura elegida es una arquitectura de 3 capas, con una capa de presenta
 
 La capa de presentación es la encargada de recibir las peticiones y enviar las respuestas. La capa de negocio es la encargada de gestionar la lógica de negocio y la capa de acceso a datos es la encargada de gestionar el acceso a los datos.
 
+## Descarga y ejecución
+Para descargar el proyecto, se debe ejecutar el siguiente comando:
+```bash
+git clone git@github.com:EnriqueRS/albums-photos-api.git
+```
+Para ejecutar el proyecto, se debe ejecutar el siguiente comando:
+```bash
+mvn spring-boot:run
+```
+
+
 ## Patrones usados
 - Singleton: para la creación del webclient
 - Repository: para la capa de acceso a datos, agnosticismo de la fuente de datos
