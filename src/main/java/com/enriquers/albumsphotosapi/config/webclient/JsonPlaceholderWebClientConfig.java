@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 @RequiredArgsConstructor
 public class JsonPlaceholderWebClientConfig implements WebClientConfig {
 
-  @Value("${JSONPLACEHOLDER_BASE_URL:https://jsonplaceholder.typicode.com/}")
+  @Value("${app.jsonplaceholder.base.url}")
   private String jsonplaceholderBaseUrl;
 
   @Bean
