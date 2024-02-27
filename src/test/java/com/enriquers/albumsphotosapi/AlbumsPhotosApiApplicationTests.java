@@ -4,8 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.enriquers.albumsphotosapi.controller.AlbumPhotoController;
+import com.enriquers.albumsphotosapi.mapper.AlbumConverter;
 import com.enriquers.albumsphotosapi.model.Album;
 import com.enriquers.albumsphotosapi.model.Photo;
+import com.enriquers.albumsphotosapi.model.dto.AlbumDTO;
+import com.enriquers.albumsphotosapi.model.dto.PhotoDTO;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +25,9 @@ class AlbumsPhotosApiApplicationTests {
   @Autowired
   private AlbumPhotoController albumPhotoController;
 
+  @Autowired
+  private AlbumConverter albumConverter;
+
   @BeforeEach
   public void setUp() {
     MockitoAnnotations.openMocks(this);
@@ -29,7 +35,7 @@ class AlbumsPhotosApiApplicationTests {
 
   @Test
   void testGetAlbumsPhotosFromAPI() {
-    List<Album> albums = albumPhotoController.getAlbumsPhotosFromAPI();
+    List<AlbumDTO> albums = albumPhotoController.getAlbumsPhotosFromAPI();
     // Assert based on the API return always same response
     assertEquals(100, albums.size());
   }
@@ -37,7 +43,8 @@ class AlbumsPhotosApiApplicationTests {
   @Test
   void testGetAlbumsPhotosFromDatabase() {
     albumPhotoController.storeAlbumsPhotosFromAPI();
-    List<Album> albums = albumPhotoController.getAlbumsPhotosFromDatabase();
+    List<Album> albums = albumPhotoController.getAlbumsPhotosFromDatabase()
+        .stream().map(albumConverter::convertToAlbum).toList();
     // Assert based on the API return always same response
     assertEquals(100, albums.size());
   }
@@ -45,8 +52,10 @@ class AlbumsPhotosApiApplicationTests {
   @Test
   void testSaveAlbums() {
     albumPhotoController.storeAlbumsPhotosFromAPI();
-    List<Album> albumsPhotosFromDatabase = albumPhotoController.getAlbumsPhotosFromDatabase();
-    List<Album> albumsPhotosFromAPI = albumPhotoController.getAlbumsPhotosFromAPI();
+    List<Album> albumsPhotosFromDatabase = albumPhotoController.getAlbumsPhotosFromDatabase()
+        .stream().map(albumConverter::convertToAlbum).toList();
+    List<Album> albumsPhotosFromAPI = albumPhotoController.getAlbumsPhotosFromAPI()
+        .stream().map(albumConverter::convertToAlbum).toList();
     assertEquals(albumsPhotosFromAPI.size(), albumsPhotosFromDatabase.size());
     assertEquals(albumsPhotosFromAPI, albumsPhotosFromDatabase);
   }
@@ -74,7 +83,8 @@ class AlbumsPhotosApiApplicationTests {
   void testStoreAndGetAlbumsPhotos() {
     albumPhotoController.storeAlbumsPhotosFromAPI();
 
-    List<Album> albums = albumPhotoController.getAlbumsPhotosFromDatabase();
+    List<Album> albums = albumPhotoController.getAlbumsPhotosFromDatabase()
+        .stream().map(albumConverter::convertToAlbum).toList();;
 
     assertTrue(albums.stream().anyMatch(album -> album.getUserId() == 1L && album.getId() == 1L && "quidem molestiae enim".equals(album.getTitle())));
   }
@@ -84,11 +94,11 @@ class AlbumsPhotosApiApplicationTests {
   void testStoreAndGetAlbumsPhotos_WithSpecificPhotos() {
     albumPhotoController.storeAlbumsPhotosFromAPI();
 
-    List<Album> albums = albumPhotoController.getAlbumsPhotosFromDatabase();
+    List<AlbumDTO> albums = albumPhotoController.getAlbumsPhotosFromDatabase();
 
     assertTrue(albums.stream().anyMatch(album -> {
       if (album.getId() == 1L) {
-        List<Photo> photos = album.getPhotos();
+        List<PhotoDTO> photos = album.getPhotos();
         return photos.stream().anyMatch(photo -> photo.getId() == 1L && "accusamus beatae ad facilis cum similique qui sunt".equals(photo.getTitle()) && "https://via.placeholder.com/600/92c952".equals(photo.getUrl()) && "https://via.placeholder.com/150/92c952".equals(photo.getThumbnailUrl())) &&
             photos.stream().anyMatch(photo -> photo.getId() == 2L && "reprehenderit est deserunt velit ipsam".equals(photo.getTitle()) && "https://via.placeholder.com/600/771796".equals(photo.getUrl()) && "https://via.placeholder.com/150/771796".equals(photo.getThumbnailUrl())) &&
             photos.stream().anyMatch(photo -> photo.getId() == 3L && "officia porro iure quia iusto qui ipsa ut modi".equals(photo.getTitle()) && "https://via.placeholder.com/600/24f355".equals(photo.getUrl()) && "https://via.placeholder.com/150/24f355".equals(photo.getThumbnailUrl())) &&

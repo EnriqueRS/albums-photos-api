@@ -1,13 +1,16 @@
 package com.enriquers.albumsphotosapi.controller;
 
 import com.enriquers.albumsphotosapi.exceptions.AlbumPhotoException;
-import com.enriquers.albumsphotosapi.model.Album;
+import com.enriquers.albumsphotosapi.mapper.AlbumConverter;
+import com.enriquers.albumsphotosapi.model.dto.AlbumDTO;
 import com.enriquers.albumsphotosapi.services.AlbumPhotoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AlbumPhotoController {
 
   private final AlbumPhotoService albumPhotoService;
+  private final AlbumConverter albumConverter;
 
   @Operation(summary = "Get albums photos from API (no store in database)")
   @ApiResponses(value = {
@@ -31,8 +35,11 @@ public class AlbumPhotoController {
   })
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
-  public List<Album> getAlbumsPhotosFromAPI() {
-    return albumPhotoService.generateAlbums().block();
+  public List<AlbumDTO> getAlbumsPhotosFromAPI() {
+    return Objects.requireNonNull(albumPhotoService.generateAlbums().block())
+        .stream()
+        .map(albumConverter::convertToAlbumDTO)
+        .collect(Collectors.toList());
   }
 
   @Operation(summary = "Store albums photos from API in database")
@@ -53,8 +60,11 @@ public class AlbumPhotoController {
   })
   @GetMapping("/stored")
   @ResponseStatus(HttpStatus.OK)
-  public List<Album> getAlbumsPhotosFromDatabase() {
-    return albumPhotoService.getAlbumsFromDatabase();
+  public List<AlbumDTO> getAlbumsPhotosFromDatabase() {
+    return albumPhotoService.getAlbumsFromDatabase()
+        .stream()
+        .map(albumConverter::convertToAlbumDTO)
+        .collect(Collectors.toList());
   }
 
 }
