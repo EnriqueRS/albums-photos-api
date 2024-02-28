@@ -5,18 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import com.enriquers.albumsphotosapi.model.Album;
 import com.enriquers.albumsphotosapi.model.Photo;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class AlbumsPhotosApiModelTests {
-
-  @BeforeEach
-  public void setUp() {
-    MockitoAnnotations.openMocks(this);
-  }
 
   @Test
   void testAlbumToString() {

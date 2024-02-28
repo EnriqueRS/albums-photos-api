@@ -8,34 +8,27 @@ import com.enriquers.albumsphotosapi.controller.AlbumPhotoController;
 import com.enriquers.albumsphotosapi.exceptions.AlbumPhotoException;
 import com.enriquers.albumsphotosapi.exceptions.GlobalExceptionHandler;
 import com.enriquers.albumsphotosapi.services.AlbumPhotoService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class AlbumsPhotosApiExceptionsTests {
 
-  @Autowired
+  @InjectMocks
   private AlbumPhotoController albumPhotoController;
 
-  @MockBean
+  @Mock
   private AlbumPhotoService albumPhotoService;
-
-  @BeforeEach
-  public void setUp() {
-    MockitoAnnotations.openMocks(this);
-  }
 
   @Test
   void main() {
     assertThrows(IllegalArgumentException.class, () -> AlbumsPhotosApiApplication.main(null));
   }
-
 
   @Test
   void testAlbumPhotoException() {

@@ -25,15 +25,9 @@ public class AlbumPhotoServiceImp implements AlbumPhotoService {
   @Override
   public Mono<List<Album>> generateAlbums() throws AlbumPhotoException {
 
-    Mono<List<Album>> albumsMono = webClient.get().uri("/albums")
-        .retrieve()
-        .bodyToFlux(Album.class)
-        .collectList();
+    Mono<List<Album>> albumsMono = getAlbums();
 
-    Mono<List<Photo>> photosMono = webClient.get().uri("/photos")
-        .retrieve()
-        .bodyToFlux(Photo.class)
-        .collectList();
+    Mono<List<Photo>> photosMono = getPhotos();
 
     return Mono.zip(albumsMono, photosMono)
         .map(tuple -> {
@@ -54,6 +48,20 @@ public class AlbumPhotoServiceImp implements AlbumPhotoService {
               })
               .toList();
         });
+  }
+
+  private Mono<List<Photo>> getPhotos() {
+    return webClient.get().uri("/photos")
+        .retrieve()
+        .bodyToFlux(Photo.class)
+        .collectList();
+  }
+
+  private Mono<List<Album>> getAlbums() {
+    return webClient.get().uri("/albums")
+        .retrieve()
+        .bodyToFlux(Album.class)
+        .collectList();
   }
 
   @Override
