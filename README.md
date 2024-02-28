@@ -62,5 +62,5 @@ Se ha usado SonarLint para el análisis estático del código. Se adjunta el an�
 ![sonar_report.png](sonar_report.png)
 
 ## Cobertura de tests
-Se adjunta la cobertura de tests:
-![tests_coverage.png](tests_coverage.png)
+Se adjunta la cobertura de tests, generado mediante Jacoco.:
+![jacoco.png](jacoco.png)
